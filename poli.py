@@ -41,13 +41,13 @@ class Food(Product):
         return data
     
     def sell(self, amount):
-        if self.expiration_date < "2025-02-11":  
+        if self.expiration_date < "2022-01-28":  
             return "Xatolik: mahsulot muddati o'tgan!"
         return super().sell(amount)
 
 
-laptop = Electronics("Laptop", 1200, 10, 2)
-print(laptop.info())
+samsung = Electronics("Samsung", 1350, 10, 2)
+print(samsung.info())
 
 apple = Food("Olma", 2, 50, "2025-01-01")
 print(apple.info())
