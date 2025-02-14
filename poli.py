@@ -73,15 +73,41 @@ class Basket:
             return "Savat bo‘sh!"
         return "\n".join([f"{product.name} - {quantity}ta - {product.price * quantity}$" for product, quantity in self.items])
 
+    def clear(self):
+        """Savatchani tozalaydi va mahsulotlarni qaytarib qo‘yadi."""
+        for product, quantity in self.items:
+            product.restock(quantity)
+        self.items = []
+        return "Savatcha tozalandi!"
+
+    def update_quantity(self, product_name, new_quantity):
+        """Savatchadagi mahsulot miqdorini yangilaydi."""
+        for i, (product, quantity) in enumerate(self.items):
+            if product.name == product_name:
+                if new_quantity > quantity:  # Qo'shish kerak
+                    diff = new_quantity - quantity
+                    if product.quantity >= diff:
+                        product.sell(diff)
+                        self.items[i] = (product, new_quantity)
+                        return f"{product_name} miqdori {new_quantity} taga yangilandi."
+                    return f"Omborda yetarli {product_name} yo‘q!"
+                elif new_quantity < quantity:  # Kamaytirish kerak
+                    diff = quantity - new_quantity
+                    product.restock(diff)
+                    self.items[i] = (product, new_quantity)
+                    return f"{product_name} miqdori {new_quantity} taga yangilandi."
+        return f"{product_name} savatda topilmadi!"
+
 samsung = Electronics("Samsung", 1350, 10, 2)
 apple = Food("Olma", 2, 50, "2025-01-01")
 milk = Food("Sut", 5, 20, "2023-12-01")
-
 
 basket = Basket()
 print(basket.add(samsung, 2))
 print(basket.add(apple, 5))
 print(basket.show())
-print(f"Umumiy narx: {basket.calc()}$")
-print(basket.remove("Samsung"))
-print(basket.show())
+
+print(basket.update_quantity("Samsung", 3))  # Miqdorni oshirish
+print(basket.update_quantity("Olma", 2))  # Miqdorni kamaytirish
+print(basket.clear())  # Savatchani tozalash
+print(basket.show())  # Tekshirib ko‘rish
